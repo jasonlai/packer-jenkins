@@ -1,0 +1,40 @@
+{
+    "builders": [
+        {
+            "type":         "docker",
+            "image":        "ubuntu:12.04",
+            "commit":       true
+        }
+    ],
+
+    "provisioners": [
+        {
+            "type":         "shell",
+            "inline": [
+                "addgroup --system --gid 200 jenkins",
+                "adduser --system --home /var/lib/jenkins --shell /bin/bash --uid 200 --gid 200 jenkins",
+                "rm -f /etc/passwd- /etc/group- /etc/shadow- /etc/gshadow-",
+                "apt-get update",
+                "apt-get install -y curl net-tools netcat update-notifier-common",
+                "apt-get install -y openjdk-7-jre-headless",
+                "apt-get update",
+                "mkdir -pvm 0755 /var/cache/local /var/cache/local/preseeding",
+                "rm -rf /var/lib/apt/lists/*",
+                "rm -f $0"
+            ]
+        }
+    ],
+
+    "post-processors": [
+        {
+            "type":         "docker-tag",
+            "repository":   "jasonlai/jenkins-base",
+            "tag":          "0.0.1"
+        },
+        {
+            "type":         "docker-tag",
+            "repository":   "jasonlai/jenkins-base",
+            "tag":          "latest"
+        }
+    ]
+}

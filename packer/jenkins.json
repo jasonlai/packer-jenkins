@@ -1,0 +1,45 @@
+{
+    "builders": [
+        {
+            "type":         "docker",
+            "image":        "jasonlai/jenkins-base",
+            "commit":       true
+        }
+    ],
+
+    "provisioners": [
+        {
+            "type":         "file",
+            "source":       "files/etc/apt/sources.list.d/jenkins.list",
+            "destination":  "/etc/apt/sources.list.d/jenkins.list"
+        },
+        {
+            "type":         "shell",
+            "inline": [
+                "curl -ksL https://jenkins-ci.org/debian/jenkins-ci.org.key | apt-key add -",
+                "apt-get update",
+                "apt-get install -y jenkins",
+                "rm -rf /var/lib/apt/lists/* /var/lib/apt/periodic/update-success-stamp",
+                "rm -f $0"
+            ]
+        },
+        {
+            "type":         "file",
+            "source":       "files/etc/default/jenkins",
+            "destination":  "/etc/default/jenkins"
+        }
+    ],
+
+    "post-processors": [
+        {
+            "type":         "docker-tag",
+            "repository":   "jasonlai/jenkins",
+            "tag":          "0.0.1"
+        },
+        {
+            "type":         "docker-tag",
+            "repository":   "jasonlai/jenkins",
+            "tag":          "latest"
+        }
+    ]
+}
